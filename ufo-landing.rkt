@@ -1,0 +1,36 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname ufo-landing) (read-case-sensitive #t) (teachpacks ((lib "image.rkt" "teachpack" "2htdp") (lib "universe.rkt" "teachpack" "2htdp"))) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ((lib "image.rkt" "teachpack" "2htdp") (lib "universe.rkt" "teachpack" "2htdp")) #f)))
+;constants
+(define WIDTH 200)
+(define HEIGHT 400)
+(define COLOR "blue")
+(define MTSCN (empty-scene WIDTH HEIGHT COLOR))
+(define UFO (overlay (circle 10 "solid" "green")
+                     (rectangle 40 4 "solid" "green")))
+(define UFO-CENTER-TO-TOP
+  (- HEIGHT (/ (image-height UFO) 2)))
+(define FLAT-ROCK-BED (rectangle 40 10 "solid" "brown"))
+(define FLAT-ROCK-BED-CENTER-TO-TOP (- HEIGHT (/ (image-height FLAT-ROCK-BED) 2)))
+(define FLAT-ROCK-BED-TO-TOP (- HEIGHT (image-height FLAT-ROCK-BED)))
+(define FLAT-ROCK-BED-TOP-UFO-CENTER (- FLAT-ROCK-BED-TO-TOP (/ (image-height UFO) 2)))
+(define TREE (overlay/offset (rectangle 4 40 "solid" "brown")
+                             0 -20
+                      (circle 10 "solid" "green")))
+(define TREE-CENTER-TO-TOP (- HEIGHT (/ (image-height TREE) 2)))
+(define X-COORD 50)
+(define TREE-X-COORD 100)
+
+;functions
+(define (ufo-landing t)
+  (cond
+    [(<= t FLAT-ROCK-BED-TOP-UFO-CENTER)
+     (place-image UFO X-COORD t
+                  (place-image FLAT-ROCK-BED X-COORD FLAT-ROCK-BED-CENTER-TO-TOP
+                               (place-image TREE TREE-X-COORD TREE-CENTER-TO-TOP MTSCN)))]
+    [(> t FLAT-ROCK-BED-TOP-UFO-CENTER)
+     (place-image UFO X-COORD FLAT-ROCK-BED-TOP-UFO-CENTER
+                  (place-image FLAT-ROCK-BED X-COORD FLAT-ROCK-BED-CENTER-TO-TOP
+                               (place-image TREE TREE-X-COORD TREE-CENTER-TO-TOP MTSCN)))]))
+
+(animate ufo-landing)
